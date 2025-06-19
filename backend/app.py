@@ -6,9 +6,7 @@ from deepgravity_epidemic import DeepGravityEpidemic, build_feature_vector
 from data_loader_scaled import load_data
 
 app = Flask(__name__)
-
-# SOLO PERMITIR el frontend de Vercel:
-CORS(app, origins=["https://dash-board-epidemic.vercel.app"])
+CORS(app)  # ⚠️ Permitir todos los orígenes por ahora
 
 # Cargar datos y modelo
 oa2features, oa2centroid, epidemic_by_week, o2d2flow = load_data()
