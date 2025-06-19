@@ -1,13 +1,16 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 import torch
+import os
 from deepgravity_epidemic import DeepGravityEpidemic, build_feature_vector
 from data_loader_scaled import load_data
-import os
 
 app = Flask(__name__)
-CORS(app)  # 🔓 Habilita CORS
 
+# SOLO PERMITIR el frontend de Vercel:
+CORS(app, origins=["https://dash-board-epidemic.vercel.app"])
+
+# Cargar datos y modelo
 oa2features, oa2centroid, epidemic_by_week, o2d2flow = load_data()
 input_dim = 16
 model = DeepGravityEpidemic(input_dim)
@@ -27,5 +30,5 @@ def predict():
     return jsonify({"flujo": float(pred[0]), "contagios": float(pred[1])})
 
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 1000))
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
