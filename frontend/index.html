@@ -1,56 +1,58 @@
-
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Simulación Epidemia</title>
-  <script src="https://d3js.org/d3.v7.min.js"></script>
-</head>
-<body>
-  <h2>Visualización de Flujo y Contagios</h2>
-  <button onclick="obtenerDatos()">Cargar Predicción</button>
-  <svg width="600" height="400"></svg>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Simulación Epidemia</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+  </head>
+  <body>
+    <h2>Visualización de Flujo y Contagios</h2>
+    <button onclick="obtenerDatos()">Cargar Predicción</button>
+    <svg width="600" height="400"></svg>
 
-  <script>
-    function obtenerDatos() {
-      fetch("https://TU_BACKEND_URL/predict", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ origin: 1, destination: 6, week: 1 })
-      })
-      .then(res => res.json())
-      .then(data => {
-        const valores = [
-          { tipo: "Flujo", valor: data.flujo },
-          { tipo: "Contagios", valor: data.contagios }
-        ];
+    <script>
+      function obtenerDatos() {
+        fetch("https://dashboard-epidemic.onrender.com/predict", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ origin: 1, destination: 6, week: 1 }),
+        })
+          .then((res) => res.json())
+          .then((data) => {
+            const valores = [
+              { tipo: "Flujo", valor: data.flujo },
+              { tipo: "Contagios", valor: data.contagios },
+            ];
 
-        const svg = d3.select("svg");
-        svg.selectAll("*").remove();
+            const svg = d3.select("svg");
+            svg.selectAll("*").remove();
 
-        const scale = d3.scaleLinear()
-          .domain([0, d3.max(valores, d => d.valor)])
-          .range([0, 300]);
+            const scale = d3
+              .scaleLinear()
+              .domain([0, d3.max(valores, (d) => d.valor)])
+              .range([0, 300]);
 
-        svg.selectAll("rect")
-          .data(valores)
-          .enter()
-          .append("rect")
-          .attr("x", (d, i) => i * 150 + 100)
-          .attr("y", d => 350 - scale(d.valor))
-          .attr("width", 100)
-          .attr("height", d => scale(d.valor))
-          .attr("fill", "steelblue");
+            svg
+              .selectAll("rect")
+              .data(valores)
+              .enter()
+              .append("rect")
+              .attr("x", (d, i) => i * 150 + 100)
+              .attr("y", (d) => 350 - scale(d.valor))
+              .attr("width", 100)
+              .attr("height", (d) => scale(d.valor))
+              .attr("fill", "steelblue");
 
-        svg.selectAll("text")
-          .data(valores)
-          .enter()
-          .append("text")
-          .attr("x", (d, i) => i * 150 + 130)
-          .attr("y", 370)
-          .text(d => d.tipo);
-      });
-    }
-  </script>
-</body>
+            svg
+              .selectAll("text")
+              .data(valores)
+              .enter()
+              .append("text")
+              .attr("x", (d, i) => i * 150 + 130)
+              .attr("y", 370)
+              .text((d) => d.tipo);
+          });
+      }
+    </script>
+  </body>
 </html>
