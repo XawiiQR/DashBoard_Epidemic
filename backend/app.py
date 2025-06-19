@@ -1,10 +1,12 @@
-
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 import torch
 from deepgravity_epidemic import DeepGravityEpidemic, build_feature_vector
 from data_loader_scaled import load_data
+import os
 
 app = Flask(__name__)
+CORS(app)  # 🔓 Habilita CORS
 
 oa2features, oa2centroid, epidemic_by_week, o2d2flow = load_data()
 input_dim = 16
@@ -25,4 +27,5 @@ def predict():
     return jsonify({"flujo": float(pred[0]), "contagios": float(pred[1])})
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    port = int(os.environ.get("PORT", 1000))
+    app.run(host="0.0.0.0", port=port)

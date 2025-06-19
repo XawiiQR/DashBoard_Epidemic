@@ -2,3 +2,4 @@ flask
 torch
 pandas
 numpy
+flask-cors
